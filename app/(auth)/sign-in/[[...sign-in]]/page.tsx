@@ -1,4 +1,5 @@
-import { SignIn } from '@clerk/nextjs'
+import { Loader2 } from 'lucide-react';
+import { SignIn, ClerkLoaded, ClerkLoading } from '@clerk/nextjs'
 
 export default function Page() {
   return (
@@ -13,7 +14,12 @@ export default function Page() {
           </p>
         </div>
         <div className="flex items-center justify-center mt-8">
-          <SignIn/>
+          <ClerkLoaded>
+            <SignIn/>
+          </ClerkLoaded>
+          <ClerkLoading>
+            <Loader2 className="animate-spin text-nuted-foreground" />
+          </ClerkLoading>
         </div>
       </div>
     </div>
