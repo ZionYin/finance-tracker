@@ -1,17 +1,26 @@
-import { z } from 'zod'
-import { zValidator } from '@hono/zod-validator'
-import { Hono } from 'hono'
-import { handle } from 'hono/vercel'
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
+import { handle } from "hono/vercel";
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { error } from "console";
 
-export const runtime = 'edge'
+export const runtime = "edge";
 
-const app = new Hono().basePath('/api')
+const app = new Hono().basePath("/api");
 
-app.get('/hello', (c) => {
-  return c.json({
-    message: 'Hello Next.js!',
-  })
-})
+app.get("/hello", clerkMiddleware(), (c) => {
+    const auth = getAuth(c);
 
-export const GET = handle(app)
-export const POST = handle(app)
+    if (!auth?.userId) {
+        return c.json({
+            error: "Not authenticated",
+        });
+    }
+    return c.json({
+        message: "Hello Next.js!",
+    });
+});
+
+export const GET = handle(app);
+export const POST = handle(app);
