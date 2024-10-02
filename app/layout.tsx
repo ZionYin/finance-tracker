@@ -14,12 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         <body>
           <header>
-            {/* <SignedOut>
+            <SignedOut>
               <SignInButton />
             </SignedOut>
             <SignedIn>
               <UserButton />
-            </SignedIn> */}
+            </SignedIn>
           </header>
           <main>{children}</main>
         </body>
