@@ -1,4 +1,5 @@
 import { useNewAccount } from "@/features/accounts/hooks/use-new-accounts"
+import { AccountForm } from "@/features/accounts/components/account-form"
 
 import { 
     Sheet, 
@@ -21,6 +22,7 @@ export const NewAccountSheet = () => {
                         Create a new account to track your transactions
                     </SheetDescription>
                 </SheetHeader>
+                <AccountForm onSubmit={() => {}} disabled={false}/>
             </SheetContent>
         </Sheet>
     )
