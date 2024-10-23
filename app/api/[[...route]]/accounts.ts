@@ -5,6 +5,7 @@ import { zValidator } from "@hono/zod-validator";
 import { db } from "@/db/drizzle";
 import { accounts, insertAccountSchema } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2"
 
 const app = new Hono()
     .get(
@@ -42,15 +43,16 @@ const app = new Hono()
                 return c.json({ error: "Unauthorized" }, 401);
             }
 
-            const data = await db
+            const [data] = await db
                 .insert(accounts)
                 .values({
-                    id: "test",
+                    id: createId(),
                     userId: auth.userId,
                     ...values,
                 })
+                .returning();
 
-            return c.json({});
+            return c.json({ data });
         }
     );
 
