@@ -16,7 +16,26 @@ const AccountsPage = () => {
             amount: 100,
             status: "pending",
             email: "m@example.com",
-        }
+        },
+        {
+            id: "728ed52g",
+            amount: 200,
+            status: "processing",
+            email: "j@example.com",
+        },
+        {
+            id: "728ed52h",
+            amount: 300,    
+            status: "success",
+            email: "b@example.com",
+        },
+        {
+            id: "728ed52i",
+            amount: 400,
+            status: "failed",
+            email: "l@example.com",
+        },
+
     ]
 
     return (
