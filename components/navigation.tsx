@@ -9,12 +9,20 @@ const routes = [
         path: "/",
     },
     {
-        name: "About",
-        path: "/about",
+        name: "Transactions",
+        path: "/transactions",
     },
     {
-        name: "Contact",
-        path: "/contact",
+        name: "Accounts",
+        path: "/accounts",
+    },
+    {
+        name: "Categories",
+        path: "/categories",
+    },
+    {
+        name: "Settings",
+        path: "/settings",
     },
 ]
 
