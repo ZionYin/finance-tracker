@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { client } from "@/lib/hono"
-import { ColumnDef } from "@tanstack/react-table"
-import { InferResponseType } from "hono"
-import { ArrowUpDown } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { client } from "@/lib/hono";
+import { ColumnDef } from "@tanstack/react-table";
+import { InferResponseType } from "hono";
+import { ArrowUpDown } from "lucide-react";
+import { Actions } from "./actions";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -16,7 +17,10 @@ import { ArrowUpDown } from "lucide-react"
 //   email: string
 // }
 
-export type ResponseType = InferResponseType<typeof client.api.accounts.$get, 200>["data"][0]
+export type ResponseType = InferResponseType<
+  typeof client.api.accounts.$get,
+  200
+>["data"][0];
 
 export const columns: ColumnDef<ResponseType>[] = [
   {
@@ -42,20 +46,6 @@ export const columns: ColumnDef<ResponseType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-  },
-  {
     accessorKey: "name",
     header: ({ column }) => {
       return (
@@ -66,8 +56,11 @@ export const columns: ColumnDef<ResponseType>[] = [
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
   },
-]
-
+  {
+    id: "actions",
+    cell: ({ row }) => <Actions id={row.original.id} />,
+  },
+];
