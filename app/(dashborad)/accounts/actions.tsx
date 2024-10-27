@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
 import { Edit, MoreHorizontal } from "lucide-react";
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const Actions = ({ id }: Props) => {
+  const { onOpen } = useOpenAccount();
   return (
     <>
       <DropdownMenu>
@@ -23,10 +25,7 @@ export const Actions = ({ id }: Props) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            disabled={false}
-            onClick={() => {}}
-          >
+          <DropdownMenuItem disabled={false} onClick={() => onOpen(id)}>
             <Edit />
             Edit
           </DropdownMenuItem>
