@@ -3,16 +3,20 @@
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete";
 import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
 import { useNewAccount } from "@/features/accounts/hooks/use-new-accounts";
 import { Loader2, Plus } from "lucide-react";
 import { columns } from "./columns";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const AccountsPage = () => {
   const newAccount = useNewAccount();
   const accountsQuery = useGetAccounts();
+  const deleteAccounts = useBulkDeleteAccounts();
   const accounts = accountsQuery.data || [];
+
+  const isDisabled = accountsQuery.isLoading || deleteAccounts.isPending;
 
   if (accountsQuery.isLoading) {
     return (
@@ -47,8 +51,11 @@ const AccountsPage = () => {
             columns={columns}
             data={accounts}
             filterKey="email"
-            onDelete={() => {}}
-            disabled={false}          />
+            onDelete={(row) => {
+              const ids = row.map((row) => row.original.id);
+              deleteAccounts.mutate({ids});
+            }}
+            disabled={isDisabled}          />
         </CardContent>
       </Card>
     </div>
