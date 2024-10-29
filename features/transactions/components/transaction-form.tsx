@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { insertAccountSchema } from "@/db/schema";
+import { insertTransactionSchema } from "@/db/schema";
 import { 
     Form,
     FormControl,
@@ -16,8 +16,10 @@ import {
     FormMessage
 } from "@/components/ui/form";
 
-const formSchema = insertAccountSchema.pick({
+const formSchema = insertTransactionSchema.pick({
     name: true,
+    amount: true,
+    category: true,
 })
 
 type FormValues = z.input<typeof formSchema>;
@@ -30,7 +32,7 @@ type Props = {
     disabled?: boolean;
 }
 
-export const AccountForm = ({
+export const TransactionForm = ({
     id,
     defaultValues,
     onSubmit,
@@ -63,7 +65,40 @@ export const AccountForm = ({
                         <FormControl>
                             <Input
                             disabled={disabled}
-                            placeholder="e.g. Cash, Bank, Credit Card" {...field}
+                            placeholder="e.g. Groceries, Rent" {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField 
+                name="amount"
+                control={form.control}
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Amount</FormLabel>
+                        <FormControl>
+                            <Input
+                            disabled={disabled}
+                            type="number"
+                            placeholder="e.g. 10.99" {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField 
+                name="category"
+                control={form.control}
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <FormControl>
+                            <Input
+                            disabled={disabled}
+                            placeholder="e.g. Food, Transportation, Entertainment" {...field}
                             />
                         </FormControl>
                         <FormMessage />
@@ -71,7 +106,7 @@ export const AccountForm = ({
                 )}
                 />
                 <Button className="w-full" disabled={disabled}>
-                    {id ? "Save changes" : "Create account"}
+                    {id ? "Save changes" : "Create transaction"}
                 </Button>
                 {!!id && (
                     <Button
@@ -82,7 +117,7 @@ export const AccountForm = ({
                     variant="outline"
                 >
                     <Trash className="size-4 mr-2" />
-                    Delete Account
+                    Delete Transaction
                     </Button>
                 )}
             </form>

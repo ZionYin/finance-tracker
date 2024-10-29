@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { insertAccountSchema } from "@/db/schema";
-import { useNewAccount } from "@/features/accounts/hooks/use-new-accounts"
-import { AccountForm } from "@/features/accounts/components/account-form"
+import { insertTransactionSchema } from "@/db/schema";
+import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction"
+import { TransactionForm } from "@/features/transactions/components/transaction-form"
 
 import {
     Sheet,
@@ -11,18 +11,18 @@ import {
     SheetHeader,
     SheetTitle
 } from "@/components/ui/sheet"
-import { useCreateAccount } from "../api/use-create-transaction";
+import { useCreateTransaction } from "../api/use-create-transaction";
 
-const formSchema = insertAccountSchema.pick({
-    name: true,
+const formSchema = insertTransactionSchema.omit({
+    id: true
 })
 
 type FormValues = z.input<typeof formSchema>;
 
-export const NewAccountSheet = () => {
-    const { isOpen, onClose } = useNewAccount()
+export const NewTransactionSheet = () => {
+    const { isOpen, onClose } = useNewTransaction()
 
-    const mutation = useCreateAccount()
+    const mutation = useCreateTransaction()
 
     const onSubmit = (values: FormValues) => {
         mutation.mutate(values, {
@@ -36,13 +36,13 @@ export const NewAccountSheet = () => {
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent className="space-y-4">
                 <SheetHeader>
-                    <SheetTitle>New Account</SheetTitle>
+                    <SheetTitle>New Transaction</SheetTitle>
                     <SheetDescription>
-                        Create a new account to track your transactions
+                        Create a new transaction to track your expenses
                     </SheetDescription>
                 </SheetHeader>
-                <AccountForm
-                    defaultValues={{ name: "" }}
+                <TransactionForm
+                    // defaultValues={{ name: "", amount: 0, category: "" }}
                     onSubmit={onSubmit}
                     disabled={mutation.isPending} />
             </SheetContent>
