@@ -171,6 +171,8 @@ const app = new Hono()
                 .returning({
                     id: transactions.id,
                 });
+
+            return c.json({ data });
         }
     )
     .patch(
