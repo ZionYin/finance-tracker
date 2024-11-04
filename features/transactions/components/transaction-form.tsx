@@ -17,6 +17,7 @@ import {
 import { Select } from "@/components/select";
 import { DatePicker } from "@/components/date-picker";
 import { Textarea } from "@/components/ui/textarea";
+import { AmountInput } from "@/components/amount-input";
 
 const formSchema = z.object({
   date: z.coerce.date(),
@@ -142,6 +143,23 @@ export const TransactionForm = ({
                   placeholder="Add a payee"
                   {...field}
                   disabled={disabled}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="amount"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Amount</FormLabel>
+              <FormControl>
+                <AmountInput
+                  {...field}
+                  disabled={disabled}
+                  placeholder="0.00"
                 />
               </FormControl>
               <FormMessage />
