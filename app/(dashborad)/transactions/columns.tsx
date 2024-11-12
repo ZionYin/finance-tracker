@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { AccountColumn } from "./account-column";
+import { CategoryColumn } from "./category-column";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -86,9 +87,11 @@ export const columns: ColumnDef<ResponseType>[] = [
     },
     cell: ({ row }) => {
       return (
-        <span>
-          {row.original.category}
-        </span>
+        <CategoryColumn 
+          id={row.original.id}
+          category={row.original.category}
+          categoryId={row.original.categoryId}
+        />
       );
     },
   },
