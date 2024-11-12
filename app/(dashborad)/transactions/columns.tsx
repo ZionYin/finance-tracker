@@ -8,6 +8,8 @@ import { InferResponseType } from "hono";
 import { ArrowUpDown } from "lucide-react";
 import { Actions } from "./actions";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -124,9 +126,35 @@ export const columns: ColumnDef<ResponseType>[] = [
       );
     },
     cell: ({ row }) => {
+      const amount = row.getValue("amount") as number;
+      return (
+        <Badge
+          variant={amount > 0 ? "primary" : "destructive"}
+          className="text-xs font-medium px-3.5 py-2.5"
+        >
+          {formatCurrency(amount)}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "account",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Account
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const account = row.getValue("account") as string;
       return (
         <span>
-          {row.original.amount}
+          {account}
         </span>
       );
     },
