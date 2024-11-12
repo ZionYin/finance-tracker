@@ -47,7 +47,15 @@ const TransactionsPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          {/* <DataTable /> */}
+          <DataTable
+            columns={columns}
+            data={transactions}
+            filterKey="date"
+            onDelete={(row) => {
+              const ids = row.map((row) => row.original.id);
+              deleteTransactions.mutate({ids});
+            }}
+            disabled={isDisabled}          />
         </CardContent>
       </Card>
     </div>
