@@ -10,17 +10,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useOpenTransaction } from "../hooks/use-open-transaction";
-import { useGetTransaction } from "../api/use-get-transaction";
-import { Loader2 } from "lucide-react";
-import { useEditTransaction } from "../api/use-edit-transaction";
-import { useDeleteTransaction } from "../api/use-delete-transaction";
+import { useCreateAccount } from "@/features/accounts/api/use-create-account";
+import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
+import { useCreateCategory } from "@/features/categories/api/use-create-categories";
+import { useGetCategories } from "@/features/categories/api/use-get-categories";
 import { useConfirm } from "@/hooks/use-confirm";
+import { Loader2 } from "lucide-react";
+import { useCreateTransaction } from "../api/use-create-transaction";
+import { useDeleteTransaction } from "../api/use-delete-transaction";
+import { useEditTransaction } from "../api/use-edit-transaction";
+import { useGetTransaction } from "../api/use-get-transaction";
+import { useOpenTransaction } from "../hooks/use-open-transaction";
 
-const formSchema = insertTransactionSchema.pick({
-  name: true,
-  amount: true,
-  category: true,
+const formSchema = insertTransactionSchema.omit({
+  id: true,
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -37,9 +40,39 @@ export const EditTransactionSheet = () => {
   const editMutation = useEditTransaction(id);
   const deleteMutation = useDeleteTransaction(id);
 
-  const isPending = editMutation.isPending || deleteMutation.isPending;
+  const createMutation = useCreateTransaction();
 
-  const isLoading = transactionQuery.isLoading;
+  const categoryQuery = useGetCategories();
+  const categoryMutation = useCreateCategory();
+  const onCreateCategory = (name: string) => {
+    categoryMutation.mutate({ name });
+  };
+  const categoryOptions = (categoryQuery.data ?? []).map((category) => ({
+    label: category.name,
+    value: category.id,
+  }));
+
+  const accountQuery = useGetAccounts();
+  const accountMutation = useCreateAccount();
+  const onCreateAccount = (name: string) => {
+    accountMutation.mutate({ name });
+  };
+  const accountOptions = (accountQuery.data ?? []).map((account) => ({
+    label: account.name,
+    value: account.id,
+  }));
+
+  const isPending =
+    editMutation.isPending ||
+    deleteMutation.isPending ||
+    transactionQuery.isLoading ||
+    categoryMutation.isPending ||
+    accountMutation.isPending;
+
+  const isLoading =
+    transactionQuery.isLoading ||
+    categoryQuery.isLoading ||
+    accountQuery.isLoading;
 
   const onSubmit = (values: FormValues) => {
     editMutation.mutate(values, {
@@ -62,14 +95,22 @@ export const EditTransactionSheet = () => {
 
   const defaultValues = transactionQuery.data
     ? {
-        name: transactionQuery.data.name,
-        amount: transactionQuery.data.amount,
-        category: transactionQuery.data.category,
+        accountId: transactionQuery.data.accountId,
+        categoryId: transactionQuery.data.categoryId,
+        amount: transactionQuery.data.amount.toString(),
+        date: transactionQuery.data.date
+          ? new Date(transactionQuery.data.date)
+          : new Date(),
+        payee: transactionQuery.data.payee,
+        notes: transactionQuery.data.notes,
       }
     : {
-        name: "",
-        amount: 0,
-        category: null,
+        accountId: "",
+        categoryId: "",
+        amount: "",
+        date: new Date(),
+        payee: "",
+        notes: "",
       };
 
   return (
@@ -91,8 +132,12 @@ export const EditTransactionSheet = () => {
               id={id}
               defaultValues={defaultValues}
               onSubmit={onSubmit}
-              disabled={isPending}
               onDelete={onDelete}
+              disabled={isPending}
+              categoryOptions={categoryOptions}
+              onCreateCategory={onCreateCategory}
+              accountOptions={accountOptions}
+              onCreateAccount={onCreateAccount}
             />
           )}
         </SheetContent>
@@ -100,4 +145,3 @@ export const EditTransactionSheet = () => {
     </>
   );
 };
-
