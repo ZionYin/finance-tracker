@@ -4,36 +4,53 @@ import { useState } from "react";
 import { ImportTable } from "./import-table";
 
 type Props = {
-    data: string[][];
-    onCancel: () => void;
-    onSubmit: (data: any) => void;
-}
+  data: string[][];
+  onCancel: () => void;
+  onSubmit: (data: any) => void;
+};
 
 const dataFormat = "yyyy-MM-dd HH:mm:ss";
 const outputFormat = "yyyy-MM-dd";
 
-const requireOptions = [
-    "amount",
-    "date",
-    "payee",
-]
+const requireOptions = ["amount", "date", "payee"];
 
 interface SelectedColumnState {
-    [key: string]: string | null
+  [key: string]: string | null;
 }
 
-export const ImportCard = ({
-    data,
-    onCancel,
-    onSubmit
-}: Props) => {
-    const [selectedColumns, setSelectedColumns] = useState<SelectedColumnState>({});
+export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
+  const [selectedColumns, setSelectedColumns] = useState<SelectedColumnState>(
+    {}
+  );
 
-    const headers = data[0]
-    const body = data.slice(1)
+  const headers = data[0];
+  const body = data.slice(1);
 
-    return (
-        <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
+  const onTableHeadSelectChange = (
+    columnIndex: number,
+    value: string | null
+  ) => {
+    setSelectedColumns((prev) => {
+      const newSelectedColumns = { ...prev };
+
+      for (const key in newSelectedColumns) {
+        if (key === `column_${columnIndex}`) {
+          newSelectedColumns[key] = null;
+        }
+      }
+
+      if (value === "skip") {
+        value = null;
+      }
+
+      newSelectedColumns[`column_${columnIndex}`] = value;
+
+      return newSelectedColumns;
+    });
+  };
+
+  return (
+    <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
         <CardHeader className="gap-y-2 flex-row items-center justify-between">
           <CardTitle className="text-xl line-clamp-1">
@@ -46,14 +63,14 @@ export const ImportCard = ({
           </div>
         </CardHeader>
         <CardContent>
-            <ImportTable 
-                headers={headers}
-                body={body}
-                selectedColumns={selectedColumns}
-                onTableHeadSelectChange={() => {}}
-            />
+          <ImportTable
+            headers={headers}
+            body={body}
+            selectedColumns={selectedColumns}
+            onTableHeadSelectChange={onTableHeadSelectChange}
+          />
         </CardContent>
       </Card>
     </div>
-    );
-}
+  );
+};
